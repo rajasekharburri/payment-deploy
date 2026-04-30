@@ -1,21 +1,26 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: shipping
+  name: payment
   namespace: roboshop
 data:
-  CART_ENDPOINT: "{{ .Values.configMap.CART_ENDPOINT }}"
-  DB_HOST: "{{ .Values.configMap.DB_HOST }}"
+  CART_HOST: "{{ .Values.configMap.CART_HOST }}"
+  CART_PORT: "8080"
+  USER_HOST: "{{ .Values.configMap.USER_HOST }}"
+  USER_PORT: "8080"
+  AMQP_HOST: "{{ .Values.configMap.AMQP_HOST }}"
+  AMQP_USER: "{{ .Values.configMap.AMQP_USER }}"
+  AMQP_PASS: "{{ .Values.configMap.AMQP_PASS }}"
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: shipping
+  name: payment
   namespace: roboshop
   # these are replica set labels
   labels:
     project: roboshop
-    component: shipping
+    component: payment
     tier: backend
 spec:
   replicas: 1
@@ -23,23 +28,23 @@ spec:
     # these labels are used to select pods
     matchLabels:
       project: roboshop
-      component: shipping
+      component: payment
       tier: backend
   # pod definition
   template:
     metadata:
       labels:
         project: roboshop
-        component: shipping
+        component: payment
         tier: backend
     spec:
       containers:
-      - name: shipping
+      - name: payment
         image: "{{ .Values.deployment.imageRepo }}:{{ .Values.deployment.imageVersion}}"
         imagePullPolicy: Always
         envFrom:
         - configMapRef:
-            name: shipping
+            name: payment
         ports:
         - name: liveness-port
           containerPort: 8080
@@ -48,23 +53,23 @@ spec:
             path: /health
             port: liveness-port
           failureThreshold: 1
-          periodSeconds: 100
+          periodSeconds: 15
         livenessProbe:
           httpGet:
             path: /health
             port: liveness-port
           failureThreshold: 1
-          periodSeconds: 100
+          periodSeconds: 15
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: shipping
+  name: payment
   namespace: roboshop
 spec:
   selector:
     project: roboshop
-    component: shipping
+    component: payment
     tier: backend
   ports:
     - protocol: TCP
