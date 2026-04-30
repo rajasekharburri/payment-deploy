@@ -1,4 +1,6 @@
 configMap:
-  CART_ENDPOINT: "cart:8080"
-  DB_HOST: "mysql"
-
+  CART_HOST: "cart"
+  USER_HOST: "user"
+  AMQP_HOST: "rabbitmq"
+  AMQP_USER: "roboshop"
+  AMQP_PASS: "roboshop123"
