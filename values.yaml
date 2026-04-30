@@ -1,5 +1,5 @@
 deployment:
-  imageRepo: 672945439745.dkr.ecr.us-east-1.amazonaws.com/roboshop/shipping
+  imageRepo: 672945439745.dkr.ecr.us-east-1.amazonaws.com/roboshop/payment
   imageVersion: IMAGE_VERSION
 service:
   servicePort: 8080 # default value
